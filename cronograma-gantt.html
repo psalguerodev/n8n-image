@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma Gantt - Proyecto Data Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            padding: 40px 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            padding: 50px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1em;
+            color: #64748b;
+            margin-bottom: 50px;
+            font-weight: 400;
+        }
+
+        .gantt-container {
+            overflow-x: auto;
+            margin-top: 30px;
+        }
+
+        .gantt-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1200px;
+        }
+
+        .gantt-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .gantt-header th {
+            padding: 18px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95em;
+            letter-spacing: 0.3px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gantt-header th:first-child {
+            text-align: left;
+            padding-left: 25px;
+            width: 280px;
+            border-top-left-radius: 12px;
+        }
+
+        .gantt-header th:last-child {
+            border-right: none;
+            border-top-right-radius: 12px;
+        }
+
+        .gantt-row {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .gantt-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .gantt-row:last-child td:first-child {
+            border-bottom-left-radius: 12px;
+        }
+
+        .gantt-row:last-child td:last-child {
+            border-bottom-right-radius: 12px;
+        }
+
+        .phase-cell {
+            padding: 20px 25px;
+            background: #fafbfc;
+            border-right: 3px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        .phase-title {
+            font-weight: 600;
+            font-size: 1.05em;
+            color: #1e293b;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .phase-weeks {
+            font-size: 0.85em;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .phase-description {
+            font-size: 0.88em;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        .timeline-cell {
+            padding: 15px 8px;
+            position: relative;
+            border-right: 1px solid #e2e8f0;
+            background: white;
+            min-width: 50px;
+        }
+
+        .timeline-cell:last-child {
+            border-right: none;
+        }
+
+        .gantt-bar {
+            height: 32px;
+            border-radius: 6px;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .gantt-row:hover .gantt-bar {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Colores diferenciados por fase */
+        .color-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .color-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .color-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .color-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .color-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .color-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .color-7 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .color-8 { background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%); }
+        .color-9 { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
+
+        .legend {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 40px;
+            height: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-text {
+            font-size: 0.9em;
+            color: #475569;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cronograma de Implementación</h1>
+        <div class="subtitle">Proyecto Data Platform - 16 Semanas</div>
+
+        <div class="gantt-container">
+            <table class="gantt-table">
+                <thead>
+                    <tr class="gantt-header">
+                        <th>Fase del Proyecto</th>
+                        <th>S1</th>
+                        <th>S2</th>
+                        <th>S3</th>
+                        <th>S4</th>
+                        <th>S5</th>
+                        <th>S6</th>
+                        <th>S7</th>
+                        <th>S8</th>
+                        <th>S9</th>
+                        <th>S10</th>
+                        <th>S11</th>
+                        <th>S12</th>
+                        <th>S13</th>
+                        <th>S14</th>
+                        <th>S15</th>
+                        <th>S16</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Fase 1: Preparación y Kick-off (Semana 1-2) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Preparación y Kick-off</div>
+                            <div class="phase-weeks">Semana 1–2</div>
+                            <div class="phase-description">Accesos, conectividad privada, lineamientos de seguridad, RACI, KPIs y SLAs.</div>
+                        </td>
+                        <td class="timeline-cell"><div class="gantt-bar color-1"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-1"></div></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                    </tr>
+
+                    <!-- Fase 2: Descubrimiento y Diseño (Semana 2-4) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Descubrimiento y Diseño</div>
+                            <div class="phase-weeks">Semana 2–4</div>
+                            <div class="phase-description">Workshops de dominio, mapa de fuentes, glosario y métricas, modelo conceptual y contratos de datos, diseño técnico.</div>
+                        </td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-2"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-2"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-2"></div></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                    </tr>
+
+                    <!-- Fase 3: Plataforma Base e Inicialización de Gobierno (Semana 2-4) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Plataforma Base e Inicialización de Gobierno</div>
+                            <div class="phase-weeks">Semana 2–4</div>
+                            <div class="phase-description">Cuentas y redes privadas, seguridad base, repos y CI/CD, catálogo y linaje inicial.</div>
+                        </td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-3"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-3"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-3"></div></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                    </tr>
+
+                    <!-- Fase 4: Ingesta del Piloto a Raw (Semana 4-7) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Ingesta del Piloto a Raw</div>
+                            <div class="phase-weeks">Semana 4–7</div>
+                            <div class="phase-description">Conectores a BBDD/APIs/archivos, validaciones de entrada, aterrizaje particionado y metadatos operativos.</div>
+                        </td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-4"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-4"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-4"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-4"></div></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                    </tr>
+
+                    <!-- Fase 5: Curated, Homologación y Calidad (Semana 6-9) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Curated, Homologación y Calidad</div>
+                            <div class="phase-weeks">Semana 6–9</div>
+                            <div class="phase-description">Normalización, tipificación, homologación de claves maestras y reglas de calidad.</div>
+                        </td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-5"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-5"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-5"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-5"></div></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                    </tr>
+
+                    <!-- Fase 6: Publicación y Consumo BI del Piloto (Semana 8-11) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Publicación y Consumo BI del Piloto</div>
+                            <div class="phase-weeks">Semana 8–11</div>
+                            <div class="phase-description">Estructuras Publish por tema, contratos de datos, reapuntamiento a BI y tableros ejecutivos y operativos.</div>
+                        </td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-6"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-6"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-6"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-6"></div></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                    </tr>
+
+                    <!-- Fase 7: Observabilidad y Operación Institucional (Semana 9-12) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Observabilidad y Operación Institucional</div>
+                            <div class="phase-weeks">Semana 9–12</div>
+                            <div class="phase-description">Tablero de salud, alarmas por SLA, runbooks y reportería de salud.</div>
+                        </td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-7"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-7"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-7"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-7"></div></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                    </tr>
+
+                    <!-- Fase 8: Gobierno y Seguridad Avanzado (Semana 11-14) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Gobierno y Seguridad Avanzado</div>
+                            <div class="phase-weeks">Semana 11–14</div>
+                            <div class="phase-description">Políticas por rol, fila y columna, auditoría y revisiones de acceso, privacidad por diseño.</div>
+                        </td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-8"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-8"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-8"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-8"></div></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                    </tr>
+
+                    <!-- Fase 9: Salida a Producción y Marcha Blanca (Semana 13-16) -->
+                    <tr class="gantt-row">
+                        <td class="phase-cell">
+                            <div class="phase-title">Salida a Producción y Marcha Blanca</div>
+                            <div class="phase-weeks">Semana 13–16</div>
+                            <div class="phase-description">Promoción a producción, estabilización, transferencia de conocimiento y plan de siguientes dominios.</div>
+                        </td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-9"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-9"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-9"></div></td>
+                        <td class="timeline-cell"><div class="gantt-bar color-9"></div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="legend">
+            <div class="legend-title">Leyenda de Fases</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color color-1"></div>
+                    <div class="legend-text">Preparación</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-2"></div>
+                    <div class="legend-text">Descubrimiento</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-3"></div>
+                    <div class="legend-text">Plataforma Base</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-4"></div>
+                    <div class="legend-text">Ingesta</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-5"></div>
+                    <div class="legend-text">Calidad</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-6"></div>
+                    <div class="legend-text">BI</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-7"></div>
+                    <div class="legend-text">Observabilidad</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-8"></div>
+                    <div class="legend-text">Seguridad</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-9"></div>
+                    <div class="legend-text">Producción</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
