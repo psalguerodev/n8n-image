@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma Gantt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 1280px;
+            height: 720px;
+            background: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        .gantt-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .gantt-header {
+            background: #34495e;
+            color: white;
+        }
+
+        .gantt-header th {
+            padding: 10px 6px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85em;
+            border-right: 1px solid #4a5f7f;
+        }
+
+        .gantt-header th:first-child {
+            text-align: left;
+            padding-left: 15px;
+            width: 250px;
+        }
+
+        .gantt-header th:last-child {
+            border-right: none;
+        }
+
+        .gantt-row {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .phase-cell {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #2c3e50;
+            border-right: 2px solid #ddd;
+        }
+
+        .timeline-cell {
+            padding: 8px 4px;
+            border-right: 1px solid #eee;
+            text-align: center;
+        }
+
+        .timeline-cell:last-child {
+            border-right: none;
+        }
+
+        .gantt-bar {
+            height: 24px;
+            border-radius: 3px;
+            margin: 0 auto;
+            background: #4a90e2;
+        }
+
+        .phase-desc {
+            font-size: 0.75em;
+            color: #7f8c8d;
+            margin-top: 3px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+            .container {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cronograma de Implementación - 16 Semanas</h1>
+
+        <table class="gantt-table">
+            <thead>
+                <tr class="gantt-header">
+                    <th>Fase</th>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                    <th>11</th>
+                    <th>12</th>
+                    <th>13</th>
+                    <th>14</th>
+                    <th>15</th>
+                    <th>16</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Preparación y Kick-off
+                        <div class="phase-desc">Accesos, seguridad, RACI y SLAs</div>
+                    </td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                </tr>
+
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Descubrimiento y Diseño
+                        <div class="phase-desc">Workshops, modelo conceptual y diseño</div>
+                    </td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                </tr>
+
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Plataforma Base e Inicialización
+                        <div class="phase-desc">Infraestructura, CI/CD y catálogo</div>
+                    </td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                </tr>
+
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Ingesta del Piloto a Raw
+                        <div class="phase-desc">Conectores y validaciones</div>
+                    </td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                </tr>
+
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Curated, Homologación y Calidad
+                        <div class="phase-desc">Normalización y reglas de calidad</div>
+                    </td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                </tr>
+
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Publicación y Consumo BI
+                        <div class="phase-desc">Contratos de datos y tableros</div>
+                    </td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                </tr>
+
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Observabilidad y Operación
+                        <div class="phase-desc">Monitoreo, alarmas y runbooks</div>
+                    </td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                </tr>
+
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Gobierno y Seguridad Avanzado
+                        <div class="phase-desc">Políticas, auditoría y privacidad</div>
+                    </td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                </tr>
+
+                <tr class="gantt-row">
+                    <td class="phase-cell">
+                        Salida a Producción
+                        <div class="phase-desc">Estabilización y transferencia</div>
+                    </td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                    <td class="timeline-cell"><div class="gantt-bar"></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
